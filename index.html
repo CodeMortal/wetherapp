@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+
+    <script>
+      async function check(url, options) {
+        try {
+          const response = await fetch(url, options);
+          const result = await response.json(); // Use .json() to parse JSON response
+
+          // Update HTML element with the result
+          const cityName = document.getElementById("cityName");
+          const humidity = document.getElementById("humidity");
+          const wind = document.getElementById("wind");
+          const tempElement = document.getElementById("tempature");
+          const container = document.getElementById("wether-img");
+
+          cityName.textContent = "";
+          tempElement.textContent = "";
+          humidity.textContent = "";
+          wind.textContent = "";
+          container.innerHTML = "";
+
+          cityName.innerHTML = `${result.location.name}`;
+
+          const humidityElement = document.createElement("p");
+          humidityElement.innerHTML = `${result.current.humidity} %`;
+          humidity.append(humidityElement);
+
+          const windElement = document.createElement("p");
+          windElement.innerHTML = `${result.current.wind_kph} km/h`;
+          wind.append(windElement);
+
+          tempElement.innerHTML = `${result.current.temp_c} °C`;
+
+          const imageElement = document.createElement("img");
+          imageElement.src = result.current.condition.icon;
+          container.appendChild(imageElement);
+
+          console.log(result);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      function getValue() {
+        const inputField = document.getElementById("input");
+        const city = inputField.value.trim(); // Trim to remove leading and trailing spaces
+
+        if (city !== "") {
+          const options = {
+            method: "GET",
+            headers: {
+              "X-RapidAPI-Key":
+                "772b4f7d11mshacafc790281ea86p1c0e16jsnc07551c180e8",
+              "X-RapidAPI-Host": "weatherapi-com.p.rapidapi.com",
+            },
+          };
+
+          const url = `https://weatherapi-com.p.rapidapi.com/current.json?q=${city}`;
+          check(url, options);
+        } else {
+          // Clear existing weather data when the input field is empty
+          const cityNameElement = document.getElementById("cityName");
+          const temperatureElement = document.getElementById("tempature");
+          const humidityElement = document.getElementById("humidity");
+          const windElement = document.getElementById("wind");
+          const weatherIconElement = document.getElementById("wether-img");
+
+          cityNameElement.textContent = "";
+          temperatureElement.textContent = "";
+          humidityElement.textContent = "";
+          windElement.textContent = "";
+          weatherIconElement.innerHTML = "";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="card">
+      <div class="search">
+        <input id="input" class="input" placeholder="Enter location" />
+        <button>
+          <img class="icon" src="./images/search.png" onclick="getValue()" />
+        </button>
+      </div>
+      <div class="temp">
+        <div id="wether-img" class="wether-icon"></div>
+        <h1 id="cityName" class="city"></h1>
+        <h2 id="tempature" class="tempature"></h2>
+      </div>
+      <div class="other">
+        <div class="col">
+          <img src="./images/humidity.png" alt="" />
+          <div>
+            <div id="humidity"></div>
+            <p>Humidity</p>
+          </div>
+        </div>
+        <div class="col">
+          <img src="./images/wind.png" alt="" />
+          <div>
+            <div id="wind" class="wind"></div>
+            <p>wind speed</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
