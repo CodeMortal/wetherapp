@@ -28,6 +28,8 @@ body{
     text-align: center;
     border-radius: 50px;
     opacity: 1;
+    backdrop-filter: blur(40px);
+}
     
 .search{
     width: 100%;
